@@ -1,4 +1,5 @@
 ﻿using MatterDapter.Adapter;
+using MatterDapter.Shared.Enum;
 using MatterDapter.Stores.Common.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace MatterDapter.Factory
 {
     internal interface IAdapterFactory
     {
-        IRepository GetMatterAdapter();
+        IRepository GetMatterAdapter(Store dataStore);
     }
 }

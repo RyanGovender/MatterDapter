@@ -1,5 +1,6 @@
 ﻿using MatterDapter.Adapter;
 using MatterDapter.Factory;
+using MatterDapter.Shared.Enum;
 using MatterDapter.Stores.Common.Interface;
 using MatterDapter.Stores.Relational;
 using System;
@@ -12,9 +13,23 @@ namespace MatterDapter.Factory
 {
     internal class AdapterFactory : IAdapterFactory
     {
-        public IRepository GetMatterAdapter()
+        private readonly IDictionary<Store,IRepository> _adapters;
+        public AdapterFactory()
         {
-            return new SqlServer();
+            _adapters = new Dictionary<Store, IRepository>();
         }
+
+        public IRepository GetMatterAdapter(Store dataStore)
+        {
+            var getAdapter = _adapters.TryGetValue(dataStore, out var adapter);
+
+            if (getAdapter && adapter != null)
+            {
+                return adapter;
+            }
+
+            throw new ArgumentException("Adaptor not found");
+        }
+     
     }
 }

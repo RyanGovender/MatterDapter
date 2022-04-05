@@ -10,9 +10,11 @@ namespace MatterDapter.Stores.Common.Interface
 {
     internal interface IRepository
     {
-        Task<MatterDapterResponse<T>> GetAsync<T>(int pageNumber = 1, int count = 10);
+        Task<MatterDapterResponse<IEnumerable<T>>> GetAllAsync<T>() where T : class;
         Task<MatterDapterResponse<T>> InsertAsync<T>(T data);
         Task<MatterDapterResponse<T>> UpdateAsync<T>(T data);
-        Task<MatterDapterResponse> DeleteAsync(dynamic id);
+        Task<MatterDapterResponse> DeleteAsync<T>(T entityToDelete) where T : class;
+ 
+         Task<MatterDapterResponse<T>> FindAsync<T>(dynamic id);
     }
 }
