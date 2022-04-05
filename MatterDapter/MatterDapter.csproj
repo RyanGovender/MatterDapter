@@ -7,10 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Factory\" />
     <Folder Include="Shared\Configuration\" />
-    <Folder Include="Stores\Common\" />
-    <Folder Include="Stores\Relational\" />
+    <Folder Include="Stores\Common\Logic\" />
     <Folder Include="Stores\NonRelational\" />
   </ItemGroup>
 

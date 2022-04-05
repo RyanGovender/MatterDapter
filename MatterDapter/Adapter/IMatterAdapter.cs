@@ -10,9 +10,9 @@ namespace MatterDapter.Adapter
 {
     public interface IMatterAdapter
     {
-        Task<MatterDapterResponse<T>> GetAsync<T>();
-        Task<MatterDapterResponse<T>> InsertAsync<T>(T data);
-        Task<MatterDapterResponse<T>> UpdateAsync<T>(T data);
-        Task<MatterDapterResponse> DeleteAsync(dynamic id);
+        Task<MatterDapterResponse<T>> GetAsync<T>(Store selectedDataStore, int pageNumber = 1, int count = 10);
+        Task<MatterDapterResponse<T>> InsertAsync<T>(T data, Store selectedDataStore);
+        Task<MatterDapterResponse<T>> UpdateAsync<T>(T data, Store selectedDataStore);
+        Task<MatterDapterResponse> DeleteAsync(dynamic id, Store selectedDataStore);
     }
 }
