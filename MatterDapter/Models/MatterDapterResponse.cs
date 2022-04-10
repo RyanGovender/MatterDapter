@@ -14,7 +14,7 @@ namespace MatterDapter.Models
 
         }
 
-        public MatterDapterResponse(object id, bool isSucess = true, string message)
+        public MatterDapterResponse(object id, bool isSucess = true, string? message = null)
         {
            Id = id;
            IsSuccess = isSucess;
