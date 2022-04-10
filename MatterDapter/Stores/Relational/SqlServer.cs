@@ -85,15 +85,8 @@ namespace MatterDapter.Stores.Relational
                     return new MatterDapterResponse<T>(false);
                 }
 
-                return new MatterDapterResponse<T>()
-                {
-                    Source= result as T,
-                    IsSuccess = true,
-                    Exception = null,
-                    Message = "Success"
-                };
-
-                //return new MatterDapterResponse<T>(new { Number = result }, true);
+                return new MatterDapterResponse<T>(result, true, "Success");
+               
             }
             catch(Exception ex)
             {

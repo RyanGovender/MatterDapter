@@ -1,16 +1,24 @@
 ﻿
 namespace MatterDapter.Models
 {
-    public class MatterDapterResponse<T> where T : class
+    public class MatterDapterResponse<T>
     {
+        public object? Id { get; set; }
         public bool IsSuccess { get; init; }
         public string? Message { get; init; }
-        public T Source { get; init; }
+        public T? Source { get; init; }
         public Exception? Exception { get; init; }
 
         public MatterDapterResponse()
         {
 
+        }
+
+        public MatterDapterResponse(object id, bool isSucess = true, string message)
+        {
+           Id = id;
+           IsSuccess = isSucess;
+           Message = message;
         }
 
         public MatterDapterResponse(bool isSuccess)
