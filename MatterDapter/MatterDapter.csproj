@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Shared\Configuration\" />
     <Folder Include="Stores\Common\Logic\" />
-    <Folder Include="Stores\Connection\" />
     <Folder Include="Stores\NonRelational\" />
   </ItemGroup>
 
@@ -19,6 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="MySqlConnector" Version="2.1.8" />
+    <PackageReference Include="Npgsql" Version="6.0.3" />
     <PackageReference Include="System.Data.OleDb" Version="6.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>

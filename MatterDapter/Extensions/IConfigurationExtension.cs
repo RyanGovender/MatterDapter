@@ -14,6 +14,12 @@ namespace MatterDapter.Extensions
             return configuration.GetAppsetting("MatterDapter:MySql:ConnectionString");
         }
 
+        public static string GetPostgresConnectionString(this IConfiguration configuration)
+        {
+            return configuration.GetAppsetting("MatterDapter:Postgres:ConnectionString");
+        }
+
+
         public static string GetAppsetting(this IConfiguration configuration, string sectionName)
         {
             var configValue = configuration.GetSection(sectionName);

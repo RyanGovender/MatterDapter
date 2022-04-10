@@ -2,6 +2,7 @@
 using MatterDapter.Shared.Enum;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,6 +28,7 @@ namespace MatterDapter.Factory
             {
                 SupportedRelationalTypes.SQLSERVER => new SqlConnection(_config.GetSQLServerConnectionString()),
                 SupportedRelationalTypes.MYSQL => new MySqlConnection(_config.GetMySQLConnectionString()),
+                SupportedRelationalTypes.POSTGRES => new NpgsqlConnection(_config.GetPostgresConnectionString()),
                 _ => throw new NotSupportedException($"Connection could not be created for {relationalTypes}."),
             };
         }
