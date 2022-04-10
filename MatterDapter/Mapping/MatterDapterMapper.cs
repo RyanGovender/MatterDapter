@@ -9,11 +9,6 @@ namespace MatterDapter.Mapping
 {
     internal class MatterDapterMapper
     {
-        public MatterDapterMapper(Task task)
-        {
-            var mrd = new MatterDapterResponse() {
- 
-            };
-        }
+       
     }
 }

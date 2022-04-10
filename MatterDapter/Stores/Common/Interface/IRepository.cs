@@ -1,20 +1,14 @@
-﻿
-using MatterDapter.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MatterDapter.Models;
+
 
 namespace MatterDapter.Stores.Common.Interface
 {
-    internal interface IRepository
+    public interface IRepository
     {
         Task<MatterDapterResponse<IEnumerable<T>>> GetAllAsync<T>() where T : class;
-        Task<MatterDapterResponse<T>> InsertAsync<T>(T data);
-        Task<MatterDapterResponse<T>> UpdateAsync<T>(T data);
+        Task<MatterDapterResponse<T>> InsertAsync<T>(T data) where T : class;
+        Task<MatterDapterResponse<T>> UpdateAsync<T>(T data) where T : class;
         Task<MatterDapterResponse> DeleteAsync<T>(T entityToDelete) where T : class;
- 
-         Task<MatterDapterResponse<T>> FindAsync<T>(dynamic id);
+         Task<MatterDapterResponse<T>> FindAsync<T>(object id) where T : class;
     }
 }

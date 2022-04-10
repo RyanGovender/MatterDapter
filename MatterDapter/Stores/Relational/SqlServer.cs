@@ -1,76 +1,120 @@
-﻿using MatterDapter.Adapter;
-using MatterDapter.Factory;
-using MatterDapter.Models;
-using MatterDapter.Shared.Enum;
+﻿using MatterDapter.Models;
 using MatterDapter.Stores.Common.Interface;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using Dapper;
-using System.Threading.Tasks;
 using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Configuration;
 using MatterDapter.Extensions;
+using MatterDapter.Factory;
+using MatterDapter.Shared.Enum;
 
 namespace MatterDapter.Stores.Relational
 {
-    internal class SqlServer : IRepository
+    public class SqlServer : IRepository
     {
-        private readonly IConfiguration _config;
+        private readonly IRelationalConnectionFactory  _relationalConnectionFactory;
 
-        public SqlServer(IConfiguration configuration)
+        public SqlServer(IRelationalConnectionFactory relationalConnectionFactory)
         {
-            _config = configuration;
+            _relationalConnectionFactory = relationalConnectionFactory;
         }
 
-        public Task<MatterDapterResponse> DeleteAsync<T>(T entityToDelete) where T : class
+        public async Task<MatterDapterResponse> DeleteAsync<T>(T entityToDelete) where T : class
         {
             try
             {
-                using IDbConnection connection = new SqlConnection(_config.GetSQLServerConnectionString());
+                using IDbConnection connection = _relationalConnectionFactory.GetRelationConnection(SupportedRelationalTypes.SQLSERVER);
 
-                var result = connection.DeleteAsync(entityToDelete);
+                var result = await connection.DeleteAsync(entityToDelete).ConfigureAwait(false);
 
-                return Task.FromResult(new MatterDapterResponse());
+                return new MatterDapterResponse(result);
             }
             catch (Exception ex)
             {
-                return Task.FromResult(new MatterDapterResponse(ex));
+                return new MatterDapterResponse(ex);
             }
         }
 
-        public Task<MatterDapterResponse<T>> FindAsync<T>(dynamic id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<MatterDapterResponse<IEnumerable<T>>> GetAllAsync<T>() where T : class
+        public async Task<MatterDapterResponse<T>> FindAsync<T>(object id) where T : class
         {
             try
             {
-                using IDbConnection connection = new SqlConnection(_config.GetSQLServerConnectionString());
+                using IDbConnection connection = _relationalConnectionFactory.GetRelationConnection(SupportedRelationalTypes.SQLSERVER);
 
-                var result = connection.GetAllAsync<T>();
+                if(id is null)
+                {
+                    throw new ArgumentNullException(nameof(id));
+                }
 
-                return Task.FromResult(new MatterDapterResponse<IEnumerable<T>>(result.GetAwaiter().GetResult()));
+                var result = await connection.GetAsync<T>(id);
+
+                return new MatterDapterResponse<T>(result);
             }
             catch (Exception ex)
             {
-                return Task.FromResult(new MatterDapterResponse<IEnumerable<T>>(new List<T>(),ex));
+                return new MatterDapterResponse<T>(ex);
             }
         }
 
-        public Task<MatterDapterResponse<T>> InsertAsync<T>(T data)
+        public async Task<MatterDapterResponse<IEnumerable<T>>> GetAllAsync<T>() where T : class
         {
-            throw new NotImplementedException();
+            try
+            {
+                using IDbConnection connection = _relationalConnectionFactory.GetRelationConnection(SupportedRelationalTypes.SQLSERVER);
+
+                var result = await connection.GetAllAsync<T>();
+
+                return new MatterDapterResponse<IEnumerable<T>>(result);
+            }
+            catch (Exception ex)
+            {
+                return new MatterDapterResponse<IEnumerable<T>>(new List<T>(),ex);
+            }
         }
 
-        public Task<MatterDapterResponse<T>> UpdateAsync<T>(T data)
+        public async Task<MatterDapterResponse<T>> InsertAsync<T>(T data) where T : class
         {
-            throw new NotImplementedException();
+            try
+            {
+                using IDbConnection connection = _relationalConnectionFactory.GetRelationConnection(SupportedRelationalTypes.SQLSERVER);
+
+                var result = await connection.InsertAsync(data).ConfigureAwait(false);
+
+                if(result == 0)
+                {
+                    return new MatterDapterResponse<T>(false);
+                }
+
+                return new MatterDapterResponse<T>()
+                {
+                    Source= result as T,
+                    IsSuccess = true,
+                    Exception = null,
+                    Message = "Success"
+                };
+
+                //return new MatterDapterResponse<T>(new { Number = result }, true);
+            }
+            catch(Exception ex)
+            {
+                return new MatterDapterResponse<T>(ex);
+            }
+        }
+
+        public async Task<MatterDapterResponse<T>> UpdateAsync<T>(T data) where T : class
+        {
+            try
+            {
+                using IDbConnection connection = _relationalConnectionFactory.GetRelationConnection(SupportedRelationalTypes.SQLSERVER);
+
+                var result = await connection.UpdateAsync(data).ConfigureAwait(false);
+
+                return new MatterDapterResponse<T>(result);
+            }
+            catch (Exception ex)
+            {
+                return new MatterDapterResponse<T>(ex);
+            }
         }
     }
 }

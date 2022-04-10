@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace MatterDapter.Models
 {
-    public class MatterDapterResponse<T>
+    public class MatterDapterResponse<T> where T : class
     {
         public bool IsSuccess { get; init; }
         public string? Message { get; init; }
-        public T? Source { get; init; }
+        public T Source { get; init; }
         public Exception? Exception { get; init; }
 
-        public MatterDapterResponse(T data)
+        public MatterDapterResponse()
         {
-            IsSuccess = true;
+
+        }
+
+        public MatterDapterResponse(bool isSuccess)
+        {
+            IsSuccess = isSuccess;
+        }
+
+        public MatterDapterResponse(T data, bool sucess = true)
+        {
+            IsSuccess = sucess;
             Source = data;
         }
 
@@ -26,6 +31,14 @@ namespace MatterDapter.Models
             Source = data;
             Exception = exception;
         }
+
+        public MatterDapterResponse(Exception exception)
+        {
+            IsSuccess = false;
+            Message = exception.Message;
+            Exception = exception;
+        }
+
     }
 
     public class MatterDapterResponse
@@ -34,9 +47,9 @@ namespace MatterDapter.Models
         public string? Message { get; init; }
         public Exception? Exception { get; init; }
 
-        public MatterDapterResponse()
+        public MatterDapterResponse(bool result)
         {
-            IsSuccess = true;
+            IsSuccess = result;
         }
 
         public MatterDapterResponse(Exception ex)

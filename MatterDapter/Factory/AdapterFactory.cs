@@ -1,22 +1,21 @@
-﻿using MatterDapter.Adapter;
-using MatterDapter.Factory;
-using MatterDapter.Shared.Enum;
+﻿using MatterDapter.Shared.Enum;
 using MatterDapter.Stores.Common.Interface;
 using MatterDapter.Stores.Relational;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatterDapter.Factory
 {
     internal class AdapterFactory : IAdapterFactory
     {
         private readonly IDictionary<Store,IRepository> _adapters;
-        public AdapterFactory()
+        private readonly IRelationalConnectionFactory _relationalConnectionFactory;
+
+        public AdapterFactory(IRelationalConnectionFactory relationalConnectionFactory)
         {
-            _adapters = new Dictionary<Store, IRepository>();
+            _relationalConnectionFactory = relationalConnectionFactory;
+            _adapters = new Dictionary<Store, IRepository>
+            {
+                { Store.SQL_SERVER, new SqlServer(_relationalConnectionFactory) }
+            };
         }
 
         public IRepository GetMatterAdapter(Store dataStore)
