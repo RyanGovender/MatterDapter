@@ -14,7 +14,8 @@ namespace MatterDapter.Factory
             _relationalConnectionFactory = relationalConnectionFactory;
             _adapters = new Dictionary<Store, IRepository>
             {
-                { Store.SQL_SERVER, new SqlServer(_relationalConnectionFactory) }
+                { Store.SQL_SERVER, new SqlServer(_relationalConnectionFactory) },
+                { Store.MYSQL, new MySql(_relationalConnectionFactory) }
             };
         }
 

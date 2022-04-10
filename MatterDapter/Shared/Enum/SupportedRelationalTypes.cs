@@ -8,6 +8,7 @@ namespace MatterDapter.Shared.Enum
 {
    public enum SupportedRelationalTypes
     {
-        SQLSERVER = 1
+        SQLSERVER = 1,
+        MYSQL = 2
     }
 }
