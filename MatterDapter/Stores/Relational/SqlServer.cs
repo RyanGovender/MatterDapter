@@ -18,7 +18,7 @@ namespace MatterDapter.Stores.Relational
         {
         }
 
-        protected override SupportedRelationalTypes DatabaseType() => SupportedRelationalTypes.SQLSERVER;
+        protected override Store DatabaseType() => Store.SQL_SERVER;
        
     }
 }

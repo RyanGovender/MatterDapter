@@ -10,6 +10,6 @@ namespace MatterDapter.Factory
 {
     public interface IRelationalConnectionFactory
     {
-        internal IDbConnection GetRelationConnection(SupportedRelationalTypes relationalTypes);
+        internal IDbConnection GetRelationConnection(Store relationalTypes);
     }
 }

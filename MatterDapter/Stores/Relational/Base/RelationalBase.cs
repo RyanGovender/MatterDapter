@@ -14,7 +14,7 @@ namespace MatterDapter.Stores.Relational.Base
 {
     internal abstract class RelationalBase : IRepository
     {
-        protected abstract SupportedRelationalTypes DatabaseType();
+        protected abstract Store DatabaseType();
 
         private readonly IRelationalConnectionFactory _relationalConnectionFactory;
 

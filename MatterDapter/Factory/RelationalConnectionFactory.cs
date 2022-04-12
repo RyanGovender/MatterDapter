@@ -22,13 +22,13 @@ namespace MatterDapter.Factory
             _config = configuration;
         }
 
-        public IDbConnection GetRelationConnection(SupportedRelationalTypes relationalTypes)
+        public IDbConnection GetRelationConnection(Store relationalTypes)
         {
             return relationalTypes switch
             {
-                SupportedRelationalTypes.SQLSERVER => new SqlConnection(_config.GetSQLServerConnectionString()),
-                SupportedRelationalTypes.MYSQL => new MySqlConnection(_config.GetMySQLConnectionString()),
-                SupportedRelationalTypes.POSTGRES => new NpgsqlConnection(_config.GetPostgresConnectionString()),
+                Store.SQL_SERVER => new SqlConnection(_config.GetSQLServerConnectionString()),
+                Store.MYSQL => new MySqlConnection(_config.GetMySQLConnectionString()),
+                Store.POSTGRES => new NpgsqlConnection(_config.GetPostgresConnectionString()),
                 _ => throw new NotSupportedException($"Connection could not be created for {relationalTypes}."),
             };
         }

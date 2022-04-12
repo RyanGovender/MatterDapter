@@ -17,6 +17,6 @@ namespace MatterDapter.Stores.Relational
         {
         }
 
-        protected override SupportedRelationalTypes DatabaseType() => SupportedRelationalTypes.MYSQL;
+        protected override Store DatabaseType() => Store.MYSQL;
     }
 }

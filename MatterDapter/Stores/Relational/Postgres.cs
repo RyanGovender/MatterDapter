@@ -11,6 +11,6 @@ namespace MatterDapter.Stores.Relational
         {
         }
 
-        protected override SupportedRelationalTypes DatabaseType() => SupportedRelationalTypes.POSTGRES;
+        protected override Store DatabaseType() => Store.POSTGRES;
     }
 }
