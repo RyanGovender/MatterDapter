@@ -4,7 +4,7 @@ using MatterDapter.Shared.Enum;
 
 namespace MatterDapter.Adapter
 {
-    public class MatterDaper : IMatterAdapter
+    internal class MatterDaper : IMatterAdapter
     {
         private readonly IAdapterFactory _adapterFactory;
         public MatterDaper(IAdapterFactory adapterFactory)

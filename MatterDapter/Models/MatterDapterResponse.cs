@@ -26,6 +26,7 @@ namespace MatterDapter.Models
             IsSuccess = isSuccess;
         }
 
+
         public MatterDapterResponse(T data, bool sucess = true)
         {
             IsSuccess = sucess;

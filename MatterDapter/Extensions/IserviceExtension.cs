@@ -13,11 +13,13 @@ namespace MatterDapter.Extensions
     public static class IserviceExtension
     {
         internal static Store DefaultStore { get; private set; }
-        public static void AddMatterDapter(this IServiceCollection services)
+        public static IServiceCollection AddMatterDapter(this IServiceCollection services)
         {
             services.AddSingleton<IMatterAdapter, MatterDaper>();
             services.AddSingleton<IAdapterFactory, AdapterFactory>();
             services.AddSingleton<IRelationalConnectionFactory, RelationalConnectionFactory>();
+
+            return services;
         }
 
         public static void SetSingleStoreType(this IServiceCollection serviceDescriptors, Store store)
