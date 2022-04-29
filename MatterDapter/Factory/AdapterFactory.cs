@@ -1,6 +1,7 @@
 ﻿using MatterDapter.Extensions;
 using MatterDapter.Shared.Enum;
 using MatterDapter.Stores.Common.Interface;
+using MatterDapter.Stores.NonRelational.Elasticsearch;
 using MatterDapter.Stores.Relational;
 
 namespace MatterDapter.Factory
@@ -17,7 +18,8 @@ namespace MatterDapter.Factory
             {
                 { Store.SQL_SERVER, new SqlServer(_relationalConnectionFactory) },
                 { Store.MYSQL, new MySql(_relationalConnectionFactory) },
-                { Store.POSTGRES, new Postgres(_relationalConnectionFactory) }
+                { Store.POSTGRES, new Postgres(_relationalConnectionFactory) },
+                { Store.ELASTICSEARCH, new elasticearch()}
             };
         }
 

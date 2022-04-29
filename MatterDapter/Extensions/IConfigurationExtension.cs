@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MatterDapter.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace MatterDapter.Extensions
 {
@@ -18,7 +19,6 @@ namespace MatterDapter.Extensions
         {
             return configuration.GetAppsetting("MatterDapter:Postgres:ConnectionString");
         }
-
 
         public static string GetAppsetting(this IConfiguration configuration, string sectionName)
         {

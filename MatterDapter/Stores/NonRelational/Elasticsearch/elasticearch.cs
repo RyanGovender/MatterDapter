@@ -1,6 +1,7 @@
 ﻿using Elasticsearch.Net;
 using MatterDapter.Models;
 using MatterDapter.Stores.Common.Interface;
+using MatterDapter.Stores.Common.Logic;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -8,21 +9,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MatterDapter.Stores.NonRelational
+namespace MatterDapter.Stores.NonRelational.Elasticsearch
 {
-    internal class Elasticsearch : IRepository
+    internal class elasticearch : IRepository
     {
         private readonly ElasticClient _esClient;
         private string _indexName { get; set; }
 
-        public Elasticsearch()
+        public elasticearch()
         {
             _esClient = CreateConnection(null);
         }
 
         private void SetIndexName<T>() where T : class
         {
-           this._indexName = nameof(T);
+           _indexName = nameof(T);
         }
 
         internal static ElasticClient CreateConnection(ElasticSettings elkSettings)
@@ -46,9 +47,12 @@ namespace MatterDapter.Stores.NonRelational
             throw new NotImplementedException();
         }
 
-        public Task<MatterDapterResponse<T>> FindAsync<T>(object id) where T : class
+        public async Task<MatterDapterResponse<T>> FindAsync<T>(object id) where T : class
         {
-            throw new NotImplementedException();
+            var documentResponse = await _esClient
+                 .GetAsync<T>(id.ToString(), x => x.Index(nameof(T)));
+
+            return new MatterDapterResponse<T>(documentResponse.Source);
         }
 
         public async Task<MatterDapterResponse<IEnumerable<T>>> GetAllAsync<T>() where T : class
@@ -56,7 +60,7 @@ namespace MatterDapter.Stores.NonRelational
             var documentResponse = await _esClient
                .SearchAsync<T>(s => s
                .MatchAll(m => m)
-               .Size(10)
+               .Size(10000)
                .Index(nameof(T)));
 
             return new MatterDapterResponse<IEnumerable<T>>(documentResponse.Hits);
@@ -70,12 +74,23 @@ namespace MatterDapter.Stores.NonRelational
 
             return insertResult.IsValid ? 
                 new MatterDapterResponse<T>(insertResult.Id):
-                new MatterDapterResponse<T>(insertResult.ServerError);
+                new MatterDapterResponse<T>(insertResult.ServerError, false, Messages.Insert_Failed);
         }
 
-        public Task<MatterDapterResponse<T>> UpdateAsync<T>(T data) where T : class
+        public async Task<MatterDapterResponse<T>> UpdateAsync<T>(T data) where T : class
         {
-            throw new NotImplementedException();
+            var id = DocumentPath<T>.Id(data);
+
+            var updateResult = await _esClient
+              .UpdateAsync(id, update => update
+              .Index(nameof(T))
+              .Doc(data)
+              .DocAsUpsert()
+              .Refresh(Refresh.True));
+
+            return updateResult.IsValid ? 
+                new MatterDapterResponse<T>(updateResult.Id, true, Messages.Update_Success) :
+                new MatterDapterResponse<T>(updateResult.ServerError, false, Messages.Update_Failed);
         }
     }
 }
