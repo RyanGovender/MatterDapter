@@ -2,6 +2,7 @@
 using MatterDapter.Models;
 using MatterDapter.Stores.Common.Interface;
 using MatterDapter.Stores.Common.Logic;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,16 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
 {
     internal class elasticearch : IRepository
     {
+        private readonly IConfiguration _config;
+        
         private readonly ElasticClient _esClient;
-        private string _indexName { get; set; }
+        private string? _indexName { get; set; }
+        private ElasticSettings _settings { set; get; };
 
-        public elasticearch()
+        public elasticearch(IConfiguration configuration)
         {
-            _esClient = CreateConnection(null);
+            _settings = _config.GetElasticSettings();
+            _esClient = CreateConnection(_settings);
         }
 
         private void SetIndexName<T>() where T : class
