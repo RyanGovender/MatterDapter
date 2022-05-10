@@ -36,15 +36,15 @@ namespace MatterDapter.Extensions
 
             return configValue.Value;
         }
-
+    
         private static T GetSettingsFromConnectionString<T>(string connectionString) where T : new()
         {
             T memberType = new();
             try
             {
-                var settings = connectionString.Split(';');
+                var settings = connectionString?.TrimEnd(';').Split(';');
 
-                if(settings is null) throw new KeyNotFoundException();
+                if (settings is null) throw new KeyNotFoundException();
 
                 foreach (var item in settings)
                 {

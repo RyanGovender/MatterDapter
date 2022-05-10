@@ -3,6 +3,7 @@ using MatterDapter.Shared.Enum;
 using MatterDapter.Stores.Common.Interface;
 using MatterDapter.Stores.NonRelational.Elasticsearch;
 using MatterDapter.Stores.Relational;
+using Microsoft.Extensions.Configuration;
 
 namespace MatterDapter.Factory
 {
@@ -10,16 +11,19 @@ namespace MatterDapter.Factory
     {
         private readonly IDictionary<Store,IRepository> _adapters;
         private readonly IRelationalConnectionFactory _relationalConnectionFactory;
+        private readonly IConfiguration _config;
 
-        public AdapterFactory(IRelationalConnectionFactory relationalConnectionFactory)
+        public AdapterFactory(IRelationalConnectionFactory relationalConnectionFactory, IConfiguration configuration)
         {
             _relationalConnectionFactory = relationalConnectionFactory;
+            _config = configuration;
+
             _adapters = new Dictionary<Store, IRepository>
             {
                 { Store.SQL_SERVER, new SqlServer(_relationalConnectionFactory) },
                 { Store.MYSQL, new MySql(_relationalConnectionFactory) },
                 { Store.POSTGRES, new Postgres(_relationalConnectionFactory) },
-                { Store.ELASTICSEARCH, new elasticearch()}
+                { Store.ELASTICSEARCH, new elasticearch(_config)}
             };
         }
 

@@ -1,14 +1,11 @@
 ﻿using Elasticsearch.Net;
+using MatterDapter.Extensions;
 using MatterDapter.Models;
 using MatterDapter.Stores.Common.Interface;
 using MatterDapter.Stores.Common.Logic;
 using Microsoft.Extensions.Configuration;
 using Nest;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MatterDapter.Stores.NonRelational.Elasticsearch
 {
@@ -17,18 +14,22 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
         private readonly IConfiguration _config;
         
         private readonly ElasticClient _esClient;
-        private string? _indexName { get; set; }
-        private ElasticSettings _settings { set; get; };
+
+        private readonly ElasticSettings _settings;
+
+        public const int GetAllLimit = 10000;
+      
 
         public elasticearch(IConfiguration configuration)
         {
+            _config = configuration;
             _settings = _config.GetElasticSettings();
             _esClient = CreateConnection(_settings);
         }
 
-        private void SetIndexName<T>() where T : class
+        private static string GetIndexName<T>()
         {
-           _indexName = nameof(T);
+            return typeof(T).Name.ToLower();
         }
 
         internal static ElasticClient CreateConnection(ElasticSettings elkSettings)
@@ -55,7 +56,7 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
         public async Task<MatterDapterResponse<T>> FindAsync<T>(object id) where T : class
         {
             var documentResponse = await _esClient
-                 .GetAsync<T>(id.ToString(), x => x.Index(nameof(T)));
+                 .GetAsync<T>(id.ToString(), x => x.Index(GetIndexName<T>()));
 
             return new MatterDapterResponse<T>(documentResponse.Source);
         }
@@ -65,8 +66,8 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
             var documentResponse = await _esClient
                .SearchAsync<T>(s => s
                .MatchAll(m => m)
-               .Size(10000)
-               .Index(nameof(T)));
+               .Size(GetAllLimit)
+               .Index(GetIndexName<T>()));
 
             return new MatterDapterResponse<IEnumerable<T>>(documentResponse.Hits);
         }
@@ -75,7 +76,7 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
         {
             var insertResult = await _esClient
                .IndexAsync(data, i => i
-               .Index(nameof(T)));
+               .Index(GetIndexName<T>()));
 
             return insertResult.IsValid ? 
                 new MatterDapterResponse<T>(insertResult.Id):
@@ -88,7 +89,7 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
 
             var updateResult = await _esClient
               .UpdateAsync(id, update => update
-              .Index(nameof(T))
+              .Index(GetIndexName<T>())
               .Doc(data)
               .DocAsUpsert()
               .Refresh(Refresh.True));
