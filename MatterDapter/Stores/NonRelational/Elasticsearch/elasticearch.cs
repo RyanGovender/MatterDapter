@@ -3,6 +3,7 @@ using MatterDapter.Extensions;
 using MatterDapter.Models;
 using MatterDapter.Stores.Common.Interface;
 using MatterDapter.Stores.Common.Logic;
+using MatterDapter.Attributes;
 using Microsoft.Extensions.Configuration;
 using Nest;
 
@@ -69,13 +70,21 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
                .Size(GetAllLimit)
                .Index(GetIndexName<T>()));
 
-            return new MatterDapterResponse<IEnumerable<T>>(documentResponse.Hits);
+            return new MatterDapterResponse<IEnumerable<T>>(documentResponse.Documents);
         }
 
         public async Task<MatterDapterResponse<T>> InsertAsync<T>(T data) where T : class
         {
+            var getId = typeof(T)
+                .GetProperties()
+                .FirstOrDefault(p => p
+                .GetCustomAttributes(typeof(IdPropertyAttribute), false).Length == 1);
+           
+            var test = getId.GetValue(data);
+
             var insertResult = await _esClient
                .IndexAsync(data, i => i
+               .Id(new Id(getId.GetValue(test)))
                .Index(GetIndexName<T>()));
 
             return insertResult.IsValid ? 
