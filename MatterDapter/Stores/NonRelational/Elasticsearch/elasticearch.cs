@@ -57,7 +57,8 @@ namespace MatterDapter.Stores.NonRelational.Elasticsearch
         public async Task<MatterDapterResponse<T>> FindAsync<T>(object id) where T : class
         {
             var documentResponse = await _esClient
-                 .GetAsync<T>(id.ToString(), x => x.Index(GetIndexName<T>()));
+                 .GetAsync<T>(id.ToString(), x => x
+                 .Index(GetIndexName<T>()));
 
             return new MatterDapterResponse<T>(documentResponse.Source);
         }
